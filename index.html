@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz App</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<style>
+    .modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      border: 2px solid black;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div v-for="(question, index) in questions" :key="index">
+      <h2>{{ question.title }}</h2>
+      <ul>
+        <li v-for="(option, optionIndex) in question.options" :key="optionIndex" @click="checkAnswer(index, option)">
+          {{ option }}
+        </li>
+      </ul>
+    </div>
+    <div class="modal" v-show="showModal">
+      <p>{{ modalMessage }}</p>
+      <button @click="nextQuestion">Next Question</button>
+    </div>
+  </div>
+
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          questions: [
+            {
+              title: "What is the capital of France?",
+              options: ["Paris", "London", "Berlin", "Rome"],
+              correctAnswer: "Paris"
+            },
+            {
+              title: "Which planet is known as the Red Planet?",
+              options: ["Venus", "Mars", "Jupiter", "Saturn"],
+              correctAnswer: "Mars"
+            },
+            {
+              title: "What is the largest mammal?",
+              options: ["Elephant", "Blue Whale", "Giraffe", "Hippo"],
+              correctAnswer: "Blue Whale"
+            }
+          ],
+          currentQuestionIndex: 0,
+          showModal: false,
+          modalMessage: ""
+        };
+      },
+      methods: {
+        checkAnswer(questionIndex, selectedOption) {
+          const correctAnswer = this.questions[questionIndex].correctAnswer;
+          if (selectedOption === correctAnswer) {
+            this.modalMessage = "Correct answer!";
+          } else {
+            this.modalMessage = "Wrong answer!";
+          }
+          this.showModal = true;
+        },
+        nextQuestion() {
+          this.currentQuestionIndex++;
+          this.showModal = false;
+          if (this.currentQuestionIndex >= this.questions.length) {
+            alert("Quiz finished!");
+          }
+        }
+      }
+    });
+
+    app.mount("#app");
+  </script>
+</body>
+</html>
